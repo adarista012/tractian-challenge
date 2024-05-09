@@ -1,5 +1,16 @@
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get.dart';
+import 'package:tractian_challenge/app/core/routes/routes.dart';
 
 class SplashController extends GetxController {
-  SplashController();
+  String? _routeName;
+
+  SplashController() {
+    _init();
+  }
+
+  _init() async {
+    await Future.delayed(const Duration(milliseconds: 1124));
+    _routeName = Routes.HOME;
+    Get.offAllNamed(_routeName!);
+  }
 }
