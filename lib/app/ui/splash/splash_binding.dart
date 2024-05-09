@@ -4,9 +4,6 @@ import 'package:tractian_challenge/app/ui/splash/splash_controller.dart';
 class SplashBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(
-      () => SplashController(),
-      fenix: true,
-    );
+    Get.lazyPut(() => SplashController());
   }
 }

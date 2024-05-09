@@ -8,11 +8,12 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final SplashController splashController = Get.find();
     return Scaffold(
       backgroundColor: AppColors.mainColor,
       body: GetBuilder(
-        init: SplashController(),
-        builder: (controller) {
+        init: splashController,
+        builder: (_) {
           return Center(
             child: Image.asset(
               'assets/logo.png',

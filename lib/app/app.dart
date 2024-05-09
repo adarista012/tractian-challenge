@@ -17,7 +17,7 @@ class App extends StatelessWidget {
       initialRoute: Routes.SPLASH,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blueGrey,
+          seedColor: Colors.blue,
         ),
         useMaterial3: true,
       ),
