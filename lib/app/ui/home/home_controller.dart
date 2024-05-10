@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:tractian_challenge/app/core/routes/routes.dart';
 import 'package:tractian_challenge/app/domain/repositories/company_repository.dart';
 import 'package:tractian_challenge/app/ui/home/widgets/home_generic_button.dart';
 
@@ -26,7 +27,10 @@ class HomeController extends GetxController {
             (e) => HomeGenericButton(
               title: e.name,
               id: e.id,
-              onPressed: () {},
+              onPressed: () => Get.toNamed(
+                Routes.ASSETS,
+                arguments: e.id,
+              ),
             ),
           )
           .toList();

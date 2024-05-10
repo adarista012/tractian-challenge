@@ -11,4 +11,7 @@ class Company extends Equatable {
 
   @override
   List<Object?> get props => [id, name];
+
+  factory Company.fromJson(Map<String, dynamic> json) =>
+      Company(id: json['id'], name: json['name']);
 }
