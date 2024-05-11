@@ -185,6 +185,36 @@ class AssetsController extends GetxController {
     update();
   }
 
+  void onchangeText(String value) {
+    _isloading = true;
+    update();
+    if (value.isEmpty || value == '') {
+      _init();
+    } else {
+      // _assets = _assets
+      //     .where((e) =>
+      //         e.name.toLowerCase().trim().contains(value.toLowerCase().trim()))
+      //     .toList();
+      // _subAssets = _subAssets.where((e) => e.status == "alert").toList();
+      // _locations = _locations
+      //     .where((e) =>
+      //         e.name.toLowerCase().trim().contains(value.toLowerCase().trim()))
+      //     .toList();
+      // _subLocations = _subLocations.where((e) => e.status == "alert").toList();
+      _components = _components
+          .where((e) =>
+              e.name.toLowerCase().trim().contains(value.toLowerCase().trim()))
+          .toList();
+      _finalComponents = _finalComponents
+          .where((e) =>
+              e.name.toLowerCase().trim().contains(value.toLowerCase().trim()))
+          .toList();
+      getLocations();
+    }
+    _isloading = false;
+    update();
+  }
+
   List<ExpansionPanel> getSublocations() {
     List<ExpansionPanel> l = [];
     int counter = 0;

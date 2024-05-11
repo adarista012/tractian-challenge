@@ -28,6 +28,7 @@ class Header extends StatelessWidget {
                   color: AppColors.grey.withAlpha(100),
                   borderRadius: BorderRadius.circular(4.0),
                 ),
+                onChanged: controller.onchangeText,
               ),
               const SizedBox(height: 8.0),
               Row(

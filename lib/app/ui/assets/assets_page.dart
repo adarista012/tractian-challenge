@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tractian_challenge/app/ui/assets/assets_controller.dart';
 import 'package:tractian_challenge/app/ui/assets/widgest/custom_app_bar.dart';
+import 'package:tractian_challenge/app/ui/assets/widgest/custom_progress_indicator.dart';
 import 'package:tractian_challenge/app/ui/assets/widgest/header.dart';
 
 class AssetsPage extends StatelessWidget {
@@ -19,12 +20,7 @@ class AssetsPage extends StatelessWidget {
               children: [
                 const Header(),
                 _.isLoading
-                    ? const Padding(
-                        padding: EdgeInsets.all(64.0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
+                    ? customProgressIndicator()
                     : Column(
                         children: [
                           Padding(
