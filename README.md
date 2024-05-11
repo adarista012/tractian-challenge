@@ -1,4 +1,4 @@
-# tractian_challenge
+# Tractian Challenge
 
 A new Flutter project.
 
