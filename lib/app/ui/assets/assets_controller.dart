@@ -39,6 +39,14 @@ class AssetsController extends GetxController {
   }
 
   _init() async {
+    _locations = [];
+    _subLocations = [];
+
+    _assets = [];
+    _subAssets = [];
+    _finalComponents = [];
+
+    _components = [];
     _isloading = true;
     update();
 
