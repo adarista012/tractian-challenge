@@ -14,6 +14,8 @@ class AssetsController extends GetxController {
   List<bool> get isOpen => _isOpen;
   bool _isPressedPowerSensor = false;
   bool get isPressedPowerSensor => _isPressedPowerSensor;
+  bool _isPressedCritical = false;
+  bool get isPressedCritical => _isPressedCritical;
   List<bool> _isOpenSubLocation = [];
   List<bool> _isOpenAssetsInSubLocation = [];
   List<bool> _isOpenAsset = [];
@@ -63,6 +65,7 @@ class AssetsController extends GetxController {
                   ? _subAssets.add(a)
                   : _finalComponents.add(a);
     }
+
     getLocations();
 
     _isloading = false;
@@ -142,12 +145,54 @@ class AssetsController extends GetxController {
     update();
   }
 
-  void onPressed() {}
+  void onPressed() {
+    _isPressedPowerSensor = !_isPressedPowerSensor;
+    _isloading = true;
+    update();
+    if (_isPressedPowerSensor == false) {
+      _init();
+    } else {
+      _assets = _assets.where((e) => e.sensorType == 'energy').toList();
+      _subAssets = _subAssets.where((e) => e.sensorType == 'energy').toList();
+      // _locations = _locations.where((e) => e.sensorType != null).toList();
+      // _subLocations = _subLocations.where((e) => e.sensorType == 'energy').toList();
+      _components = _components.where((e) => e.sensorType == 'energy').toList();
+      _finalComponents =
+          _finalComponents.where((e) => e.sensorType == 'energy').toList();
+      getLocations();
+    }
+    _isloading = false;
+    update();
+  }
+
+  void onPressedCritical() {
+    _isPressedCritical = !_isPressedCritical;
+    _isloading = true;
+    update();
+    if (_isPressedCritical == false) {
+      _init();
+    } else {
+      // _assets = _assets.where((e) => e.status == "alert").toList();
+      _subAssets = _subAssets.where((e) => e.status == "alert").toList();
+      // _locations = _locations.where((e) => e.status != null).toList();
+      // _subLocations = _subLocations.where((e) => e.status == "alert").toList();
+      _components = _components.where((e) => e.status == "alert").toList();
+      _finalComponents =
+          _finalComponents.where((e) => e.status == "alert").toList();
+      getLocations();
+    }
+    _isloading = false;
+    update();
+  }
+
   List<ExpansionPanel> getSublocations() {
     List<ExpansionPanel> l = [];
     int counter = 0;
     List<int> keys = [];
     List<String?> assetsLocations = [];
+
+    List<String?> finalComponentParentIds = [];
+    List<String?> finalComponentLocationIds = [];
 
     for (var i in _subLocations) {
       _isOpenSubLocation.add(false);
@@ -156,6 +201,10 @@ class AssetsController extends GetxController {
     }
     for (var e in _assets) {
       assetsLocations.add(e.locationId);
+    }
+    for (Asset i in _finalComponents) {
+      finalComponentLocationIds.add(i.locationId);
+      finalComponentParentIds.add(i.parentId);
     }
 
     for (var i in keys) {
@@ -177,15 +226,24 @@ class AssetsController extends GetxController {
               ],
             );
           },
-          body: assetsLocations.contains(_subLocations[i].id)
-              ? ExpansionPanelList(
-                  materialGapSize: 0.0,
-                  children: getAssetsInSubLocation(_subLocations[i].id),
-                  expansionCallback: (int i, bool state) {
-                    expansion(i, state, _isOpenAssetsInSubLocation);
-                  },
-                )
-              : Container(),
+          body: Column(children: [
+            assetsLocations.contains(_subLocations[i].id)
+                ? ExpansionPanelList(
+                    materialGapSize: 0.0,
+                    children: getAssetsInSubLocation(_subLocations[i].id),
+                    expansionCallback: (int i, bool state) {
+                      expansion(i, state, _isOpenAssetsInSubLocation);
+                    },
+                  )
+                : Container(),
+          ]),
+          // : (finalComponentParentIds.contains(_subLocations[i].id) &&
+          //             _finalComponents.isNotEmpty) ||
+          //         (finalComponentLocationIds
+          //                 .contains(_subLocations[i].id) &&
+          //             _finalComponents.isNotEmpty)
+          //     ? Column(children: getFinalComponents(_subLocations[i].id))
+          //     : Container()),
         ),
       );
     }
@@ -305,16 +363,25 @@ class AssetsController extends GetxController {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Container(
-                  height: 8.0,
-                  width: 8.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.0),
-                    color: _finalComponents[i].status == 'alert'
-                        ? AppColors.red
-                        : AppColors.green,
-                  ),
-                ),
+                _finalComponents[i].status != 'alert'
+                    ? Image.asset('assets/bolt.png')
+                    : Container(
+                        height: 8.0,
+                        width: 8.0,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                            color: AppColors.red),
+                      ),
+                // Container(
+                //   height: 8.0,
+                //   width: 8.0,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(16.0),
+                //     color: _finalComponents[i].status == 'alert'
+                //         ? AppColors.red
+                //         : AppColors.green,
+                //   ),
+                // ),
               ],
             ),
           ),

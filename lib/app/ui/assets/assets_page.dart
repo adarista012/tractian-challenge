@@ -25,18 +25,23 @@ class AssetsPage extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         ),
                       )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ExpansionPanelList(
-                            elevation: 1,
-                            children: _.getLocations(),
-                            expansionCallback: (int i, bool s) {
-                              _.expansion(i, s, _.isOpen);
-                            }),
+                    : Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: ExpansionPanelList(
+                                elevation: 1,
+                                children: _.getLocations(),
+                                expansionCallback: (int i, bool s) {
+                                  _.expansion(i, s, _.isOpen);
+                                }),
+                          ),
+                          _.components.isNotEmpty
+                              ? Column(children: _.getComponents())
+                              : Container(),
+                        ],
                       ),
-                _.components.isNotEmpty
-                    ? Column(children: _.getComponents())
-                    : Container(),
               ],
             );
           },

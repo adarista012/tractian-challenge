@@ -5,20 +5,23 @@ class AssetsGenericButton extends StatelessWidget {
   final String title;
   final String id;
   final Icon icon;
+  final bool isPressed;
   final void Function()? onPressed;
+
   const AssetsGenericButton({
     super.key,
     required this.title,
     required this.id,
     this.onPressed,
     required this.icon,
+    required this.isPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
       onPressed: onPressed,
-      color: Theme.of(context).primaryColor,
+      color: isPressed ? Theme.of(context).primaryColor : AppColors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4.0),
       ),
@@ -30,7 +33,7 @@ class AssetsGenericButton extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              color: AppColors.white,
+              color: isPressed ? AppColors.white : AppColors.grey,
             ),
           ),
         ],
