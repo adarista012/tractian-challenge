@@ -44,7 +44,7 @@ class Header extends StatelessWidget {
                       size: 14.0,
                     ),
                     isPressed: controller.isPressedPowerSensor,
-                    onPressed: () => controller.onPressed(),
+                    onPressed: () => controller.onPressed(true),
                   ),
                   const SizedBox(width: 8.0),
                   AssetsGenericButton(
@@ -58,7 +58,7 @@ class Header extends StatelessWidget {
                           : AppColors.grey,
                       size: 16.0,
                     ),
-                    onPressed: () => controller.onPressedCritical(),
+                    onPressed: () => controller.onPressed(false),
                   ),
                 ],
               ),

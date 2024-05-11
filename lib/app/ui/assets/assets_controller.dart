@@ -39,12 +39,6 @@ class AssetsController extends GetxController {
   }
 
   _init() async {
-    _locations = [];
-    _subLocations = [];
-    _components = [];
-    _assets = [];
-    _subAssets = [];
-    _finalComponents = [];
     _isloading = true;
     update();
 
@@ -145,42 +139,40 @@ class AssetsController extends GetxController {
     update();
   }
 
-  void onPressed() {
-    _isPressedPowerSensor = !_isPressedPowerSensor;
+  void onPressed(bool isPower) {
     _isloading = true;
     update();
-    if (_isPressedPowerSensor == false) {
-      _init();
+    if (isPower) {
+      _isPressedPowerSensor = !_isPressedPowerSensor;
+      if (_isPressedPowerSensor == false) {
+        _init();
+      } else {
+        _assets = _assets.where((e) => e.sensorType == 'energy').toList();
+        _subAssets = _subAssets.where((e) => e.sensorType == 'energy').toList();
+        // _locations = _locations.where((e) => e.sensorType != null).toList();
+        // _subLocations = _subLocations.where((e) => e.sensorType == 'energy').toList();
+        _components =
+            _components.where((e) => e.sensorType == 'energy').toList();
+        _finalComponents =
+            _finalComponents.where((e) => e.sensorType == 'energy').toList();
+        getLocations();
+      }
     } else {
-      _assets = _assets.where((e) => e.sensorType == 'energy').toList();
-      _subAssets = _subAssets.where((e) => e.sensorType == 'energy').toList();
-      // _locations = _locations.where((e) => e.sensorType != null).toList();
-      // _subLocations = _subLocations.where((e) => e.sensorType == 'energy').toList();
-      _components = _components.where((e) => e.sensorType == 'energy').toList();
-      _finalComponents =
-          _finalComponents.where((e) => e.sensorType == 'energy').toList();
-      getLocations();
+      _isPressedCritical = !_isPressedCritical;
+      if (_isPressedCritical == false) {
+        _init();
+      } else {
+        // _assets = _assets.where((e) => e.status == "alert").toList();
+        _subAssets = _subAssets.where((e) => e.status == "alert").toList();
+        // _locations = _locations.where((e) => e.status != null).toList();
+        // _subLocations = _subLocations.where((e) => e.status == "alert").toList();
+        _components = _components.where((e) => e.status == "alert").toList();
+        _finalComponents =
+            _finalComponents.where((e) => e.status == "alert").toList();
+        getLocations();
+      }
     }
-    _isloading = false;
-    update();
-  }
 
-  void onPressedCritical() {
-    _isPressedCritical = !_isPressedCritical;
-    _isloading = true;
-    update();
-    if (_isPressedCritical == false) {
-      _init();
-    } else {
-      // _assets = _assets.where((e) => e.status == "alert").toList();
-      _subAssets = _subAssets.where((e) => e.status == "alert").toList();
-      // _locations = _locations.where((e) => e.status != null).toList();
-      // _subLocations = _subLocations.where((e) => e.status == "alert").toList();
-      _components = _components.where((e) => e.status == "alert").toList();
-      _finalComponents =
-          _finalComponents.where((e) => e.status == "alert").toList();
-      getLocations();
-    }
     _isloading = false;
     update();
   }
@@ -320,7 +312,7 @@ class AssetsController extends GetxController {
     return l;
   }
 
-  List<Widget> getFinalComponents(String id) {
+  List<Widget> getFinalComponents(String id, bool isInSubAsset) {
     int counter = 0;
     List<Widget> l = [];
     List<int> keys = [];
@@ -337,8 +329,11 @@ class AssetsController extends GetxController {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Row(
               children: [
-                Text('  |      |   ',
-                    style: TextStyle(color: AppColors.mainColor)),
+                isInSubAsset
+                    ? Text('  |    |      |      |   ',
+                        style: TextStyle(color: AppColors.mainColor))
+                    : Text('  |      |   ',
+                        style: TextStyle(color: AppColors.mainColor)),
                 const SizedBox(width: 8.0),
                 Image.asset('assets/component_icon.png'),
                 Flexible(
@@ -347,71 +342,26 @@ class AssetsController extends GetxController {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Container(
-                  height: 8.0,
-                  width: 8.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.0),
-                    color: _finalComponents[i].status == 'alert'
-                        ? AppColors.red
-                        : AppColors.green,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    }
-    return l;
-  }
-
-  List<Widget> getFinalComponentsInSubAsset(String id) {
-    int counter = 0;
-    List<Widget> l = [];
-    List<int> keys = [];
-
-    for (var i in _finalComponents) {
-      keys.add(counter);
-      counter++;
-    }
-    for (var i in keys) {
-      if (id == _finalComponents[i].parentId ||
-          id == _finalComponents[i].locationId) {
-        l.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Row(
-              children: [
-                Text('  |    |      |      |   ',
-                    style: TextStyle(color: AppColors.mainColor)),
-                const SizedBox(width: 8.0),
-                Image.asset('assets/component_icon.png'),
-                Flexible(
-                  child: Text(
-                    '  ${_finalComponents[i].name}  ',
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                _finalComponents[i].status != 'alert'
-                    ? Image.asset('assets/bolt.png')
+                isInSubAsset
+                    ? _finalComponents[i].status != 'alert'
+                        ? Image.asset('assets/bolt.png')
+                        : Container(
+                            height: 8.0,
+                            width: 8.0,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                color: AppColors.red),
+                          )
                     : Container(
                         height: 8.0,
                         width: 8.0,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16.0),
-                            color: AppColors.red),
+                          borderRadius: BorderRadius.circular(16.0),
+                          color: _finalComponents[i].status == 'alert'
+                              ? AppColors.red
+                              : AppColors.green,
+                        ),
                       ),
-                // Container(
-                //   height: 8.0,
-                //   width: 8.0,
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(16.0),
-                //     color: _finalComponents[i].status == 'alert'
-                //         ? AppColors.red
-                //         : AppColors.green,
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -435,7 +385,6 @@ class AssetsController extends GetxController {
       }
       keys.add(counter);
       counter++;
-      // }
     }
     for (var e in _subAssets) {
       subAssetParentIds.add(e.parentId);
@@ -472,7 +421,7 @@ class AssetsController extends GetxController {
                 _subAssets.isNotEmpty &&
                         subAssetParentIds.contains(_assets[i].id)
                     ? ExpansionPanelList(
-                        children: getSubAssets(_assets[i].id),
+                        children: getSubAssets(_assets[i].id, false),
                         expansionCallback: (int i, bool state) {
                           expansion(i, state, _isOpenSubAssets);
                         },
@@ -482,7 +431,7 @@ class AssetsController extends GetxController {
                             _finalComponents.isNotEmpty) ||
                         (finalComponentLocationIds.contains(_assets[i].id) &&
                             _finalComponents.isNotEmpty)
-                    ? Column(children: getFinalComponents(_assets[i].id))
+                    ? Column(children: getFinalComponents(_assets[i].id, false))
                     : Container()
               ],
             ),
@@ -495,7 +444,7 @@ class AssetsController extends GetxController {
     return l;
   }
 
-  List<ExpansionPanel> getSubAssets(String id) {
+  List<ExpansionPanel> getSubAssets(String id, bool isInSubLocation) {
     int counter = 0;
     List<ExpansionPanel> l = [];
     List<int> keys = [];
@@ -505,7 +454,9 @@ class AssetsController extends GetxController {
 
     for (Asset i in _subAssets) {
       if (id == i.parentId) {
-        _isOpenSubAssets.add(false);
+        isInSubLocation
+            ? _isOpenSubAssetsInSublocation.add(false)
+            : _isOpenSubAssets.add(false);
       }
       keys.add(counter);
       counter++;
@@ -521,7 +472,9 @@ class AssetsController extends GetxController {
       if (id == _subAssets[i].parentId) {
         l.add(
           ExpansionPanel(
-            isExpanded: _isOpenSubAssets[openCount],
+            isExpanded: isInSubLocation
+                ? _isOpenSubAssetsInSublocation[openCount]
+                : _isOpenSubAssets[openCount],
             headerBuilder: (_, __) {
               return Row(
                 children: [
@@ -541,70 +494,18 @@ class AssetsController extends GetxController {
             body: (finalComponentLocationIds.contains(_subAssets[i].id) ||
                     finalComponentParentIds.contains(_subAssets[i].id))
                 ? Container()
-                : Container(
-                    color: Colors.amber,
-                    height: 20,
-                    width: 800,
-                    child: Text(_subAssets[i].id),
-                  ),
-          ),
-        );
-        openCount++;
-      }
-    }
-
-    return l;
-  }
-
-  List<ExpansionPanel> getSubAssetsInSubLocation(String id) {
-    int counter = 0;
-    List<ExpansionPanel> l = [];
-    List<int> keys = [];
-    List<String?> finalComponentParentIds = [];
-    List<String?> finalComponentLocationIds = [];
-
-    for (var i in _subAssets) {
-      if (id == i.parentId) {
-        _isOpenSubAssetsInSublocation.add(false);
-      }
-      keys.add(counter);
-      counter++;
-    }
-    for (Asset i in _finalComponents) {
-      finalComponentLocationIds.add(i.locationId);
-      finalComponentParentIds.add(i.locationId);
-    }
-
-    int openCount = 0;
-    for (var i in keys) {
-      if (id == _subAssets[i].parentId) {
-        l.add(
-          ExpansionPanel(
-              isExpanded: _isOpenSubAssetsInSublocation[openCount],
-              headerBuilder: (_, __) {
-                return Row(
-                  children: [
-                    Text('  |    |      |   ',
-                        style: TextStyle(color: AppColors.mainColor)),
-                    const SizedBox(width: 8.0),
-                    Image.asset('assets/asset_icon.png'),
-                    Flexible(
-                      child: Text(
-                        '  ${_subAssets[i].name}',
-                        overflow: TextOverflow.ellipsis,
+                : isInSubLocation
+                    ? Column(
+                        children:
+                            // getFinalComponentsInSubAsset(_subAssets[i].id),
+                            getFinalComponents(_subAssets[i].id, true))
+                    : Container(
+                        color: Colors.amber,
+                        height: 20,
+                        width: 800,
+                        child: Text(_subAssets[i].id),
                       ),
-                    ),
-                  ],
-                );
-              },
-              body: (finalComponentParentIds.contains(_subAssets[i].id) &&
-                          _finalComponents.isNotEmpty) ||
-                      (finalComponentLocationIds.contains(_subAssets[i].id) &&
-                          _finalComponents.isNotEmpty)
-                  ? Text(_subAssets[i].id)
-                  : Column(
-                      children:
-                          getFinalComponentsInSubAsset(_subAssets[i].id))),
+          ),
         );
         openCount++;
       }
@@ -656,7 +557,7 @@ class AssetsController extends GetxController {
                 ? Column(
                     children: [
                       ExpansionPanelList(
-                        children: getSubAssetsInSubLocation(_assets[i].id),
+                        children: getSubAssets(_assets[i].id, true),
                         expansionCallback: (int i, bool state) {
                           expansion(i, state, _isOpenSubAssetsInSublocation);
                         },
@@ -664,19 +565,6 @@ class AssetsController extends GetxController {
                     ],
                   )
                 : Container(),
-            // parentIdsAssets.contains(_locations[i].id)
-            //     ? Column(
-            //         children: [
-            //           ExpansionPanelList(
-            //             children: getSublocations(),
-            //             expansionCallback: expansionSublocations,
-            //           ),
-            //           // _subAssets.isNotEmpty
-            //           //     ? Column(children: getComponents())
-            //           //     : Container()
-            //         ],
-            //       )
-            //     : Container(),
           ),
         );
         openCount++;
