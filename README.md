@@ -16,4 +16,5 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 
-![Splash](https://github.com/adarista012/tractian-challenge/assets/74845162/7eed57c5-6a02-4d9d-afbd-a0c0008450ff)
+
+![ezgif com-video-to-gif-converter](https://github.com/adarista012/tractian-challenge/assets/74845162/3ba2db1f-c183-4736-acc2-a2fcf40adf52)
