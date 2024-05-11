@@ -17,4 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 
 
-![ezgif com-video-to-gif-converter](https://github.com/adarista012/tractian-challenge/assets/74845162/3ba2db1f-c183-4736-acc2-a2fcf40adf52)
+![ezgif com-video-to-gif-converter width="40" height="40"](https://github.com/adarista012/tractian-challenge/assets/74845162/3ba2db1f-c183-4736-acc2-a2fcf40adf52)
